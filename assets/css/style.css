@@ -147,7 +147,8 @@ header.site {
   font-family: ui-monospace, "SF Mono", Consolas, Menlo, monospace;
   font-weight: 600;
   font-size: 14.5px;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   text-decoration: none;
   display: flex;
   align-items: baseline;
