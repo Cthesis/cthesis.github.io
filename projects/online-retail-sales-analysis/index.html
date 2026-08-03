@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Online Retail Sales Analysis — Case Study — Christopher</title>
+<meta name="description" content="How a 536,500-row UK retail transaction log was cleaned, analyzed, and turned into six business recommendations. A full case study by Christopher, Data Analyst." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="canonical" href="https://cthesis.github.io/projects/online-retail-sales-analysis/" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Online Retail Sales Analysis — Case Study" />
+<meta property="og:description" content="How a 536,500-row UK retail transaction log was cleaned, analyzed, and turned into six business recommendations." />
+<meta property="og:url" content="https://cthesis.github.io/projects/online-retail-sales-analysis/" />
+<meta name="theme-color" content="#1e6f5c" />
+<link rel="stylesheet" href="../../assets/css/style.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<header class="site">
+  <div class="wrap nav">
+    <a href="../../#top" class="brand"><span class="dot">&gt;</span> christopher<span class="dot">.</span>data</a>
+    <input type="checkbox" id="navToggle" />
+    <nav class="navlinks">
+      <a href="#overview">Overview</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#findings">Findings</a>
+      <a href="#downloads">Downloads</a>
+      <a href="../../#contact" class="btn btn-primary cta">Contact Me</a>
+    </nav>
+    <label for="navToggle" class="hamburger" aria-label="Toggle menu">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M0 1h18M0 7h18M0 13h18" stroke="currentColor" stroke-width="1.6"/></svg>
+    </label>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <!-- ================= CASE HERO ================= -->
+  <section class="case-hero">
+    <div class="wrap">
+      <a class="back-link reveal" href="../../#projects">&larr; Back to home</a>
+      <p class="eyebrow reveal">case_study.online_retail<span class="rule"></span></p>
+      <h1 class="reveal">Online Retail Sales Analysis</h1>
+      <p class="summary reveal">A UK-based online giftware retailer had 536,500 transaction records and no way to know which customers or products drove revenue, or whether the business was healthy. This project cleans that data, analyzes it end to end, and turns it into six specific business recommendations.</p>
+
+      <div class="case-meta reveal">
+        <span class="tag">Retail &amp; E-commerce</span>
+        <span class="tag">13-Month Dataset</span>
+        <span class="tag">CRISP-DM Methodology</span>
+        <span class="tag">Python &middot; Pandas &middot; Matplotlib &middot; Excel</span>
+      </div>
+
+      <div class="metric-row reveal">
+        <div class="metric-card"><div class="num">£<span data-count-to="10.37" data-decimals="2" data-suffix="M">0</span></div><div class="lbl">Gross revenue analyzed</div></div>
+        <div class="metric-card"><div class="num"><span data-count-to="536388" data-suffix="">0</span></div><div class="lbl">Transaction rows cleaned</div></div>
+        <div class="metric-card"><div class="num"><span data-count-to="4372" data-suffix="">0</span></div><div class="lbl">Unique customers</div></div>
+        <div class="metric-card"><div class="num"><span data-count-to="38" data-suffix="">0</span></div><div class="lbl">Countries</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= OVERVIEW ================= -->
+  <section class="section" id="overview">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">executive_summary<span class="rule"></span></p>
+        <h2 class="section-title">A business with data, but not insight</h2>
+      </div>
+      <div class="prose reveal">
+        <p>The retailer had a raw transaction log going back to December 2010, one row per invoice line. That log could tell you what happened, but not what it meant: which customers mattered most, which products were worth promoting, whether sales were growing, or whether the data could even be trusted in the first place.</p>
+        <p>After cleaning, 536,388 of the original 536,500 rows remained. The analysis found a business that is highly seasonal, with a sharp pre-Christmas revenue spike; customer-concentrated, with the top 20% of customers generating roughly three-quarters of revenue; and heavily UK-dependent, at over 91% of transactions. A long-tail product catalog means no single item dominates. Two gaps stood out: 12.6% of revenue can't be tied to any customer, and returns account for a material 8.7% of gross revenue.</p>
+        <p>Every step below, cleaning, analysis, findings, and recommendations, is reproducible and documented in the linked <a href="https://github.com/Cthesis/online-retail-sales-analysis" target="_blank" rel="noopener" style="color:var(--accent)">GitHub repository</a>.</p>
+      </div>
+
+      <div class="section-head reveal" style="margin-top:48px">
+        <p class="eyebrow">business_context<span class="rule"></span></p>
+        <h3 style="font-size:1.4rem">Objectives</h3>
+      </div>
+      <ul class="list-plain reveal">
+        <li>Produce a clean, trustworthy dataset, with every cleaning decision documented and reproducible.</li>
+        <li>Understand sales patterns: revenue trends, seasonality, and best- and worst-performing products and countries.</li>
+        <li>Understand customer behavior: who the valuable customers are, and how purchase frequency and spend are distributed.</li>
+        <li>Surface specific, actionable recommendations tied to evidence, not general advice.</li>
+        <li>Document the workflow so any analyst could reproduce every step without guessing.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= DATA ================= -->
+  <section class="section" id="data">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">data_sources<span class="rule"></span></p>
+        <h2 class="section-title">What the data looked like going in</h2>
+        <p class="section-sub">Sourced from the UCI Machine Learning Repository's Online Retail dataset, a widely used public benchmark, so results can be sanity-checked against existing analysis.</p>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table class="data-table">
+          <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Rows (line items)</td><td class="num">536,500 raw &rarr; 536,388 cleaned</td></tr>
+            <tr><td>Columns</td><td class="num">10 raw &rarr; 12 cleaned</td></tr>
+            <tr><td>Unique customers</td><td class="num">4,372</td></tr>
+            <tr><td>Unique products</td><td class="num">3,940</td></tr>
+            <tr><td>Countries</td><td class="num">38</td></tr>
+            <tr><td>Date range</td><td class="num">1 Dec 2010 &ndash; 9 Dec 2011</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-head reveal" style="margin-top:40px">
+        <h3 style="font-size:1.2rem">Known issues before cleaning</h3>
+      </div>
+      <ul class="list-plain reveal">
+        <li><code>CustomerID</code> missing for about 25% of rows.</li>
+        <li><code>Quantity</code> negative for 10,469 rows (returns and cancellations).</li>
+        <li>Two different, inconsistent signals for a cancelled order: a "C"-prefixed invoice number versus a negative quantity, disagreeing on 1,218 rows.</li>
+        <li>Non-product stock codes (postage, bank fees, manual adjustments) mixed in with real products.</li>
+        <li>A handful of implausible values, including a negative unit price.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= CLEANING ================= -->
+  <section class="section" id="cleaning">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">data_preparation<span class="rule"></span></p>
+        <h2 class="section-title">Flag, don't delete</h2>
+        <p class="section-sub">The guiding principle throughout: preserve real business data wherever possible, and delete only when a row couldn't be trusted or interpreted at all. Only 112 rows were removed, 0.02% of the dataset.</p>
+      </div>
+
+      <div class="process-timeline reveal">
+        <div class="process-step">
+          <div class="idx">1</div>
+          <div><h3>Checked for exact duplicate rows</h3><p>None found, confirming no double-counted transactions.</p></div>
+        </div>
+        <div class="process-step">
+          <div class="idx">2</div>
+          <div><h3>Removed two redundant duplicate columns</h3><p>One was a byte-for-byte copy of the description field, the other a mostly-empty leftover formula column. Neither carried new information.</p></div>
+        </div>
+        <div class="process-step">
+          <div class="idx">3</div>
+          <div><h3>Standardized text fields</h3><p>Trimmed whitespace from 112,601 rows and normalized product code casing, invisible issues that would otherwise silently break groupings and joins.</p></div>
+        </div>
+        <div class="process-step">
+          <div class="idx">4</div>
+          <div><h3>Removed rows that couldn't be trusted</h3><p>109 rows with no product name and 3 rows with a logically impossible negative price, both untraceable to a real transaction.</p></div>
+        </div>
+        <div class="process-step">
+          <div class="idx">5</div>
+          <div><h3>Fixed data types</h3><p>Converted <code>CustomerID</code> from a float to a nullable integer, since it's an identifier, not a quantity.</p></div>
+        </div>
+        <div class="process-step">
+          <div class="idx">6</div>
+          <div><h3>Reconciled the two conflicting return signals</h3><p>Consolidated invoice prefix and negative quantity into one explicit <code>IsReturn</code> flag, preserving every row instead of silently dropping the ones that failed a single rule.</p></div>
+        </div>
+        <div class="process-step">
+          <div class="idx">7</div>
+          <div><h3>Flagged rather than deleted the ambiguous rows</h3><p>Non-product stock codes (postage, fees) and the 134,900 rows missing a <code>CustomerID</code> were flagged, not removed, keeping roughly a quarter of the business's revenue intact for revenue-level analysis.</p></div>
+        </div>
+        <div class="process-step">
+          <div class="idx">8</div>
+          <div><h3>Engineered <code>LineTotal</code> and re-checked for duplicates</h3><p>Calculated quantity &times; unit price once, correctly, since it's needed across almost every later analysis. A final duplicate check confirmed the cleaning steps introduced none.</p></div>
+        </div>
+      </div>
+
+      <div class="table-wrap reveal" style="margin-top:28px">
+        <table class="data-table">
+          <thead><tr><th>Metric</th><th>Before</th><th>After</th></tr></thead>
+          <tbody>
+            <tr><td>Rows</td><td class="num">536,500</td><td class="num">536,388</td></tr>
+            <tr><td>Columns</td><td class="num">10</td><td class="num">12</td></tr>
+            <tr><td>Missing <code>CustomerID</code></td><td class="num">134,900</td><td class="num">134,788 (flagged, not deleted)</td></tr>
+            <tr><td>Missing <code>Description</code></td><td class="num">109</td><td class="num">0</td></tr>
+            <tr><td>Negative price rows</td><td class="num">3</td><td class="num">0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ANALYSIS ================= -->
+  <section class="section" id="analysis">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">exploratory_analysis<span class="rule"></span></p>
+        <h2 class="section-title">What the numbers show</h2>
+        <p class="section-sub">Every numeric field is heavily right-skewed: mean quantity per line item is 9.6 versus a median of 3, a clear sign of a small number of extreme values (bulk orders, manual entries) sitting alongside typical small purchases.</p>
+      </div>
+
+      <div class="chart-figure reveal">
+        <div class="interactive-chart" id="chart-revenue-trend"></div>
+        <figcaption><strong>Monthly net revenue.</strong> Revenue climbs steadily from August and peaks in November 2011 at roughly £1.4M, about double an average month, ahead of Christmas gift-buying. December 2011 looks low only because the dataset cuts off on the 9th, not because of a real seasonal drop. Hover a point for the exact figure.</figcaption>
+      </div>
+
+      <div class="chart-figure reveal">
+        <div class="interactive-chart" id="chart-customer-concentration"></div>
+        <figcaption><strong>Customer revenue concentration.</strong> The top 20% of identified customers generate roughly three-quarters of revenue, close to a classic 80/20 pattern. The business depends materially on a relatively small core of repeat buyers.</figcaption>
+      </div>
+
+      <div class="chart-grid" style="margin-top:24px">
+        <figure class="chart-figure reveal">
+          <img src="../../assets/img/online-retail/chart1_price_dist.png" alt="Histogram of unit price on a log scale, showing most products between £1 and £5" loading="lazy" width="800" height="500" />
+          <figcaption>Most products cluster between £1 and £5, with a long tail of pricier items. Confirms a low-cost, high-volume retailer, not a premium one.</figcaption>
+        </figure>
+        <figure class="chart-figure reveal">
+          <img src="../../assets/img/online-retail/chart2_qty_dist.png" alt="Histogram of quantity per line item, showing most orders between 1 and 12 units" loading="lazy" width="800" height="500" />
+          <figcaption>Typical orders are 1 to 12 units. Bulk buyers exist but are a rare, distinct minority.</figcaption>
+        </figure>
+        <figure class="chart-figure reveal">
+          <img src="../../assets/img/online-retail/chart3_corr.png" alt="Correlation heatmap of quantity, unit price, and line total" loading="lazy" width="800" height="720" />
+          <figcaption>Quantity and unit price are essentially uncorrelated (&minus;0.00): no visible bulk-discount pattern at the line-item level.</figcaption>
+        </figure>
+        <figure class="chart-figure reveal">
+          <img src="../../assets/img/online-retail/chart5_top_countries.png" alt="Bar chart of top 10 countries by revenue, excluding the UK" loading="lazy" width="800" height="490" />
+          <figcaption>With the UK excluded, the Netherlands, Ireland, and Germany lead international markets, each contributing roughly £200 to £285k.</figcaption>
+        </figure>
+        <figure class="chart-figure reveal">
+          <img src="../../assets/img/online-retail/chart6_top_products.png" alt="Bar chart of top 10 products by revenue contribution" loading="lazy" width="800" height="490" />
+          <figcaption>Ranked by total revenue, not order count alone. This is the view that should drive inventory and marketing priority.</figcaption>
+        </figure>
+        <figure class="chart-figure reveal">
+          <img src="../../assets/img/online-retail/chart7_dow.png" alt="Bar chart of transactions by day of week, showing zero transactions on Saturday" loading="lazy" width="800" height="500" />
+          <figcaption>There is no Saturday trading at all, a hard business-rule cutoff that matters for any "average per day" calculation.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINDINGS ================= -->
+  <section class="section" id="findings">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">key_findings<span class="rule"></span></p>
+        <h2 class="section-title">Nine findings, each backed by a number</h2>
+      </div>
+      <div class="card-grid">
+        <div class="insight-card reveal"><div class="idx">01</div><p>Revenue grew about 19.6% quarter over quarter into Q4 2011, consistent with seasonal demand ahead of Christmas gift-buying.</p></div>
+        <div class="insight-card reveal"><div class="idx">02</div><p>November 2011 alone generated about 101% more revenue than the average of all other full months, a sharp, concentrated peak rather than a gradual ramp.</p></div>
+        <div class="insight-card reveal"><div class="idx">03</div><p>Returns erased about 8.7% of gross product revenue, roughly £899k against £10.37M in gross sales.</p></div>
+        <div class="insight-card reveal"><div class="idx">04</div><p>The top 20% of identified customers generated about 74.6% of revenue, close to a classic 80/20 pattern.</p></div>
+        <div class="insight-card reveal"><div class="idx">05</div><p>65.3% of identified customers made more than one purchase, a strong repeat rate for a gift retailer.</p></div>
+        <div class="insight-card reveal"><div class="idx">06</div><p>International sales account for only about 14.7% of revenue, with the Netherlands, Ireland, and Germany as the leading markets.</p></div>
+        <div class="insight-card reveal"><div class="idx">07</div><p>No single product dominates: the top 10 products account for only about 9.5% of total revenue out of 3,940 distinct products.</p></div>
+        <div class="insight-card reveal"><div class="idx">08</div><p>About 12.6% of revenue, £1.20M, is tied to transactions with no <code>CustomerID</code>, limiting loyalty tracking and lifetime-value calculations for that slice of the business.</p></div>
+        <div class="insight-card reveal"><div class="idx">09</div><p>Postage and fee line items total £709k across the dataset, a reminder that raw revenue totals overstate actual product performance unless separated out.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RECOMMENDATIONS ================= -->
+  <section class="section" id="recommendations">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">business_impact<span class="rule"></span></p>
+        <h2 class="section-title">What the business should do about it</h2>
+        <p class="section-sub">Business actions, not technical tasks. Each one is tied to a specific finding above.</p>
+      </div>
+      <div class="card-grid">
+        <div class="recommendation-card reveal"><div class="idx">Recommendation 1</div><p>Plan inventory and staffing around the confirmed Q4 seasonal spike, scaling up supplier lead times and customer service starting in September or October, not November.</p><div class="linked">Linked to findings 1 &amp; 2</div></div>
+        <div class="recommendation-card reveal"><div class="idx">Recommendation 2</div><p>Launch a loyalty or retention program targeted at the top 20% of customers. A small improvement in retention for this group has an outsized effect on total revenue.</p><div class="linked">Linked to findings 4 &amp; 5</div></div>
+        <div class="recommendation-card reveal"><div class="idx">Recommendation 3</div><p>Investigate the return rate at the product level rather than treating 8.7% as normal. If concentrated in a few products, fixing the listings could recover a meaningful chunk of that £899k.</p><div class="linked">Linked to finding 3</div></div>
+        <div class="recommendation-card reveal"><div class="idx">Recommendation 4</div><p>Require or incentivize customer identification at checkout to close the 12.6%-of-revenue data gap that currently blocks personalized marketing and churn prevention.</p><div class="linked">Linked to finding 8</div></div>
+        <div class="recommendation-card reveal"><div class="idx">Recommendation 5</div><p>Treat international expansion as a deliberate growth lever. A focused push in the Netherlands, Ireland, and Germany is likely more productive than spreading effort across 38 countries.</p><div class="linked">Linked to finding 6</div></div>
+        <div class="recommendation-card reveal"><div class="idx">Recommendation 6</div><p>Protect the long-tail catalog strategy rather than over-investing in a few "hero" products. The business's strength is breadth, not a handful of bestsellers.</p><div class="linked">Linked to finding 7</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CHALLENGES & FUTURE ================= -->
+  <section class="section" id="challenges">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">honest_limits<span class="rule"></span></p>
+        <h2 class="section-title">What this analysis can't tell you</h2>
+        <p class="section-sub">Being transparent about limitations is what separates a credible analysis from an overconfident one.</p>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="section-head reveal">
+            <p class="eyebrow">challenges<span class="rule"></span></p>
+            <h3 style="font-size:1.3rem">Where the analysis has limits</h3>
+          </div>
+          <ul class="list-plain reveal">
+            <li>A quarter of transactions have no <code>CustomerID</code>, so customer-level conclusions describe only the identified three-quarters of the business.</li>
+            <li>Source documentation was thin. Several cleaning decisions had to be inferred from the data itself rather than confirmed against a definition.</li>
+            <li>Extreme outliers in quantity and price required judgment calls about error versus legitimate rare event.</li>
+            <li>The "is this a return" signal disagreed with itself in 1,218 rows, a source-system issue that isn't fully resolvable downstream.</li>
+            <li>This was a single-pass analysis, not an exhaustive product-code audit across 3,940 codes.</li>
+            <li>Some country-level return rates are based on very small transaction counts and aren't statistically reliable.</li>
+            <li>The UK represents over 91% of transactions, so any pattern found across the other 37 countries is directionally useful at best.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="section-head reveal">
+            <p class="eyebrow">future_improvements<span class="rule"></span></p>
+            <h3 style="font-size:1.3rem">What comes next</h3>
+          </div>
+          <ul class="list-plain reveal">
+            <li>Require customer ID capture at checkout and extend data collection beyond 13 months for real year-over-year comparison.</li>
+            <li>Fix data quality at the source: one consistent return flag, no redundant columns, a canonical product-code mapping.</li>
+            <li>Build a live dashboard so revenue, returns, and top-customer metrics update automatically.</li>
+            <li>Automate the cleaning pipeline so every new batch of data runs through the same documented rules.</li>
+            <li>Build a formal RFM customer segmentation model to make the loyalty-program recommendation precisely targetable.</li>
+            <li>Deploy a churn or next-purchase prediction model for the high-value repeat-customer segment.</li>
+            <li>Add external benchmark data, such as UK retail indices or exchange rates, to explain why revenue moves the way it does.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-head reveal" style="margin-top:48px">
+        <p class="eyebrow">lessons_learned<span class="rule"></span></p>
+        <h3 style="font-size:1.3rem">What this project reinforced</h3>
+      </div>
+      <div class="prose reveal">
+        <p>Flagging instead of deleting turned out to matter more than expected. Every ambiguous row (missing customer IDs, disputed return status) stayed in the dataset with an explicit flag, which meant no later analysis had to guess whether it was looking at the whole business or a filtered slice of it. The other recurring lesson was to check for partial time periods before trusting any seasonal read: December 2011 looked like a revenue collapse until it turned out the dataset simply stopped on the 9th. Thin source documentation was the hardest constraint. When a data dictionary doesn't exist, every inferred rule needs to be written down as clearly as a confirmed one, so the next analyst can see where judgment was applied.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DOWNLOADS ================= -->
+  <section class="section" id="downloads">
+    <div class="wrap-narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">downloads_and_repository<span class="rule"></span></p>
+        <h2 class="section-title">See the full work</h2>
+        <p class="section-sub">Every file referenced in this case study, including the raw and cleaned datasets, source code, and full documentation, is in the public repository.</p>
+      </div>
+      <div class="reveal" style="display:flex;flex-direction:column;gap:12px">
+        <div class="download-card">
+          <div class="meta"><div class="name">Full Repository</div><div class="type">GitHub &middot; data, cleaning log, charts, reports</div></div>
+          <a href="https://github.com/Cthesis/online-retail-sales-analysis" target="_blank" rel="noopener">Open &#8599;</a>
+        </div>
+        <div class="download-card">
+          <div class="meta"><div class="name">Final Report</div><div class="type">Markdown &middot; executive summary through recommendations</div></div>
+          <a href="https://github.com/Cthesis/online-retail-sales-analysis/blob/master/05_Final_Report/Final_Report.md" target="_blank" rel="noopener">View &#8599;</a>
+        </div>
+        <div class="download-card">
+          <div class="meta"><div class="name">Stakeholder Presentation</div><div class="type">.pptx &middot; 11 slides with speaker notes</div></div>
+          <a href="https://github.com/Cthesis/online-retail-sales-analysis/blob/master/06_Presentation/Slides/Online_Retail_Analysis_Presentation.pptx" target="_blank" rel="noopener">Download &#8599;</a>
+        </div>
+        <div class="download-card">
+          <div class="meta"><div class="name">Team Playbook</div><div class="type">.docx &middot; reproducible step-by-step process</div></div>
+          <a href="https://github.com/Cthesis/online-retail-sales-analysis/blob/master/07_Team_Guide/Retail_Analytics_Team_Playbook.docx" target="_blank" rel="noopener">Download &#8599;</a>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-top:40px;text-align:center">
+        <p style="color:var(--ink-muted);font-size:14.5px;margin-bottom:14px">More case studies are in progress.</p>
+        <a href="../../#contact" class="btn btn-primary">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <span>&copy; 2026 Christopher · Data Analyst</span>
+    <div class="footer-links">
+      <a href="../../#top">Home</a>
+      <a href="../../#projects">Projects</a>
+      <a href="mailto:tcmtika@gmail.com">Email</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js"></script>
+</body>
+</html>
