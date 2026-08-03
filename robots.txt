@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /projects/_template/
+Allow: /
+
+Sitemap: https://cthesis.github.io/sitemap.xml
