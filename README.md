@@ -1,6 +1,6 @@
 # cthesis.github.io
 
-Christopher's data analyst portfolio. Live at [cthesis.github.io](https://cthesis.github.io/).
+Christopher Mtika's data analyst portfolio. Live at [cthesis.github.io](https://cthesis.github.io/).
 
 ## Stack
 
