@@ -220,6 +220,8 @@ header.site {
 .mock .bar span.chip { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
 .mock .body { padding: 18px; }
 .mock svg { width: 100%; height: auto; display: block; }
+.mock .body.flush { padding: 0; }
+.mock .body.flush img { width: 100%; height: auto; display: block; }
 
 /* ---------- section shell ---------- */
 .section { padding: 84px 0; border-top: 1px solid var(--line); }
